@@ -9,3 +9,7 @@ provider "google" {
 resource "google_compute_network" "vpc_network" {
   name = "terraform-network"
 }
+
+resource "random_string" "auth_cloud_run_uuid" {
+  length           = 16
+}
