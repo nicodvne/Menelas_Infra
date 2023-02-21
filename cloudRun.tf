@@ -134,6 +134,12 @@ resource "google_cloud_run_service" "phpMyAdmin" {
 
       timeout_seconds = 500
     }
+
+    metadata {
+      annotations = {
+        "autoscaling.knative.dev/maxScale"      = "2"
+      }
+    }
   }
 
   traffic {
