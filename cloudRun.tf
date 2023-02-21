@@ -6,7 +6,6 @@ resource "google_cloud_run_service" "cloudRunAuth" {
     annotations = {
       #    This sets the service to only allow all traffic
       "run.googleapis.com/ingress" = "all"
-      "autoscaling.knative.dev/maxScale"      = "2"
     }
   }
 
@@ -35,6 +34,12 @@ resource "google_cloud_run_service" "cloudRunAuth" {
         }
       }
     }
+
+    metadata {
+      annotations = {
+        "autoscaling.knative.dev/maxScale"      = "2"
+      }
+    }
   }
 
   traffic {
@@ -53,7 +58,6 @@ resource "google_cloud_run_service" "cloudRunApi" {
     annotations = {
       #    This sets the service to only allow all traffic
       "run.googleapis.com/ingress" = "all"
-      "autoscaling.knative.dev/maxScale"      = "2"
     }
   }
 
@@ -84,14 +88,18 @@ resource "google_cloud_run_service" "cloudRunApi" {
 
       timeout_seconds = 500
     }
+
+    metadata {
+      annotations = {
+        "autoscaling.knative.dev/maxScale"      = "2"
+      }
+    }
   }
 
   traffic {
     percent         = 100
     latest_revision = true
   }
-
-
 
   autogenerate_revision_name = true
 }
@@ -133,7 +141,6 @@ resource "google_cloud_run_service" "phpMyAdmin" {
     latest_revision = true
   }
 
-
-
   autogenerate_revision_name = true
 }
+
