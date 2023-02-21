@@ -6,6 +6,7 @@ resource "google_cloud_run_service" "cloudRunAuth" {
     annotations = {
       #    This sets the service to only allow all traffic
       "run.googleapis.com/ingress" = "all"
+      "autoscaling.knative.dev/maxScale"      = "2"
     }
   }
 
@@ -52,6 +53,7 @@ resource "google_cloud_run_service" "cloudRunApi" {
     annotations = {
       #    This sets the service to only allow all traffic
       "run.googleapis.com/ingress" = "all"
+      "autoscaling.knative.dev/maxScale"      = "2"
     }
   }
 
@@ -79,6 +81,8 @@ resource "google_cloud_run_service" "cloudRunApi" {
           container_port = 8393
         }
       }
+
+      timeout_seconds = 500
     }
   }
 
@@ -86,6 +90,50 @@ resource "google_cloud_run_service" "cloudRunApi" {
     percent         = 100
     latest_revision = true
   }
+
+
+
+  autogenerate_revision_name = true
+}
+
+
+resource "google_cloud_run_service" "phpMyAdmin" {
+  name     = "php-my-admin"
+  location = "europe-southwest1"
+
+  metadata {
+    annotations = {
+      "run.googleapis.com/ingress" = "all"
+    }
+  }
+
+  template {
+    spec {
+      containers {
+        image = "phpmyadmin/phpmyadmin"
+        env {
+          name = "PMA_HOST"
+          value = var.api_db_host
+        }
+        env {
+          name = "PMA_PORT"
+          value = 3306
+        }
+        ports {
+          container_port = 80
+        }
+      }
+
+      timeout_seconds = 500
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+
+
 
   autogenerate_revision_name = true
 }
